@@ -570,6 +570,8 @@ Pipeline *gf3d_pipeline_create_from_config(
     pipelineInfo.basePipelineIndex = -1; // Optional
     pipelineInfo.pDepthStencilState = &depthStencil;
     sj_free(file);
+    //slog("pipe test 1");
+    //slog_sync();
     if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, NULL, &pipe->pipeline) != VK_SUCCESS)
     {   
         slog("failed to create pipeline!");
@@ -577,6 +579,8 @@ Pipeline *gf3d_pipeline_create_from_config(
         gf3d_pipeline_free(pipe);
         return NULL;
     }
+    //slog("pipe test 2");
+    //slog_sync();
     pipe->drawCallList = gfc_allocate_array(sizeof(PipelineDrawCall),descriptorCount);
     if (pipe->drawCallList)
     {
@@ -588,7 +592,7 @@ Pipeline *gf3d_pipeline_create_from_config(
     pipe->uboBigBuffer = gf3d_uniform_buffer_list_new(device,bufferSize*descriptorCount,1,gf3d_swapchain_get_swap_image_count());
     gfc_line_cpy(pipe->name,configFile);
     pipe->indexType = indexType;
-    if (__DEBUG)slog("pipeline created from file '%s'",configFile);
+    slog("pipeline created from file '%s'",configFile);
     return pipe;
 }
 

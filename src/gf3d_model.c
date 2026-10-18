@@ -126,7 +126,7 @@ void gf3d_model_manager_init(Uint32 model_max){
         attributes,
         3,
         sizeof(ModelUBO),
-        VK_INDEX_TYPE_UINT32
+        VK_INDEX_TYPE_UINT16
     );
 
     
@@ -264,6 +264,7 @@ Model * gf3d_model_load(const char * filename){
     str2 = sj_object_get_string( data, "texture");
     if (str2){
         texture = gf3d_texture_load(str2);
+        slog("TEXTURE IS HERE");
     } else {
         texture = gf3d_model.defaultTexture;
         slog("failed to find model texture. default texture enabled");
