@@ -316,11 +316,10 @@ ModelUBO gf3d_model_get_ubo(GFC_Matrix4 modelMat, GFC_Color color)
     else {
         slog("something wrong copying matrix");
     }
-    memcpy(ubo.view, view, sizeof(GFC_Matrix4));
 
     gf3d_vgraphics_get_projection_matrix(&ubo.proj);
 
-    ubo.color = gfc_color_to_vector4(color);
+    ubo.color = gfc_color_to_vector4f(color);
 
     return ubo;
 }

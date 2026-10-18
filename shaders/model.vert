@@ -18,14 +18,14 @@ layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inNormal;
 layout(location = 2) in vec2 inUV;
 
-layout(location = 0) out vec3 outPosition;
-layout(location = 1) out vec3 outNormal;
-layout(location = 2) out vec2 outUV;
+layout(location = 0) out vec2 outUV;
+layout(location = 1) out vec4 outNormal;
+layout(location = 2) out vec4 outColor;
 
 void main()
 {
     gl_Position = ubo.proj * ubo.view * ubo.model * vec4(inPosition, 1.0);
-    outPosition = inPosition;
-    outNormal = inNormal;
     outUV = inUV;
+    outNormal = vec4(inNormal,0);
+    outColor = ubo.color;
 }

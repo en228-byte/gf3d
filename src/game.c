@@ -44,7 +44,7 @@ int main(int argc,char *argv[])
     Model  *agumon;
     GFC_Matrix4 mat;
     GFC_Matrix4* view;
-    GFC_Vector3D offset = { 0,-10,0 };
+    GFC_Vector3D offset = { 0,-15,0 };
     slog_sync();
     //initializtion    
     parse_arguments(argc,argv);
@@ -64,6 +64,7 @@ int main(int argc,char *argv[])
     slog_sync();
     //bg = gf2d_sprite_load_image("images/bg_flat.png");
     gfc_matrix4_identity(mat);
+    
     agumon = gf3d_model_load("models/dino/dino.model");
     slog("test1");
     view = gf3d_vgraphics_get_view_matrix();
@@ -72,14 +73,15 @@ int main(int argc,char *argv[])
     // main game loop    
     while(!_done)
     {
+        gfc_vector3d_rotate_about_z(&offset, 0.05);
         gfc_input_update();
         gf2d_mouse_update();
         gf2d_font_update();
         //camera updaes
-        gfc_matrix4_view(*view, gfc_vector3d(0, -10, 0), gfc_vector3d(0, 0, 0), gfc_vector3d(0, 0, 1));
+        gfc_matrix4_view(*view, offset, gfc_vector3d(0, 0, 0), gfc_vector3d(0, 0, 1));
         gf3d_vgraphics_render_start();
-
         gf3d_model_queue_render(agumon, mat, GFC_COLOR_WHITE);
+
         
         slog_sync();
                 //2D draws
