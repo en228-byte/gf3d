@@ -16,16 +16,6 @@
 //forward declaration:
 typedef struct ObjData_S ObjData;
 
-//absolute basics of the mesh information sent to the graphics card
-typedef struct
-{
-    GFC_Matrix4     model;
-    GFC_Matrix4     view;
-    GFC_Matrix4     proj;
-    GFC_Vector4D    color;
-    GFC_Vector4D    camera;
-}MeshUBO;
-
 typedef struct
 {
     GFC_Vector3D vertex;
@@ -52,7 +42,7 @@ typedef struct
 typedef struct
 {
     GFC_TextLine        filename;
-    Uint32              _refCount;
+    Uint32              refcount;
     Uint8               _inuse;
     GFC_List           *primitives;
     GFC_Box             bounds;
@@ -80,6 +70,7 @@ Mesh *gf3d_mesh_new();
  */
 Mesh *gf3d_mesh_load_obj(const char *filename);
 
+Mesh* gf3d_get_mesh_by_filename(const char* filename);
 /**
  * @brief make an exact, but separate copy of the input mesh
  * @param in the mesh to duplicate
@@ -101,7 +92,6 @@ void gf3d_mesh_move_vertices(Mesh *in, GFC_Vector3D offset,GFC_Vector3D rotation
  */
 MeshPrimitive *gf3d_mesh_primitive_new();
 
-
 /**
  * @brief get the input attribute descriptions for mesh based rendering
  * @param count (optional, output) the number of attributes
@@ -121,16 +111,6 @@ VkVertexInputBindingDescription * gf3d_mesh_get_bind_description();
 void gf3d_mesh_free(Mesh *mesh);
 
 /**
- * @brief needs to be called once at the beginning of each render frame
- */
-void gf3d_mesh_reset_pipes();
-
-/**
- * @brief called to submit all draw commands to the mesh pipelines
- */
-void gf3d_mesh_submit_pipe_commands();
-
-/**
  * @brief get the current command buffer for the mesh system
  */
 VkCommandBuffer gf3d_mesh_get_model_command_buffer();
@@ -145,6 +125,12 @@ VkCommandBuffer gf3d_mesh_get_model_command_buffer();
  */
 void gf3d_mesh_queue_render(Mesh *mesh,Pipeline *pipe,void *uboData,Texture *texture);
 
+
+void gf3d_mesh_primitive_free(MeshPrimitive* prim);
+
+void gf3d_mesh_delete(MeshPrimitive* mesh);
+
+int gf3d_mesh_create_vertex_buffer(MeshPrimitive* mesh);
 
 /**
  * @brief adds a mesh to the render pass rendered as an outline highlight
@@ -166,20 +152,4 @@ void gf3d_mesh_render_generic(Mesh *mesh,Pipeline *pipe,VkDescriptorSet * descri
  */
 void gf3d_mesh_create_vertex_buffer_from_vertices(MeshPrimitive *primitive);
 
-/**
- * @brief get the pipeline that is used to render basic 3d meshes
- * @return NULL on error or the pipeline in question
- */
-Pipeline *gf3d_mesh_get_pipeline();
-
-/**
- * @brief given a model matrix and basic color, build the meshUBO needed to render a model
- * @param modelMat the model Matrix
- * @param colorMod the color for the UBO
- */
-MeshUBO gf3d_mesh_get_ubo(
-    GFC_Matrix4 modelMat,
-    GFC_Color colorMod);
-
-
-#endif
+#endif;
