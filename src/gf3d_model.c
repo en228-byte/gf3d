@@ -18,6 +18,8 @@
 
 #define MESH_ATTRIBUTE_COUNT 3
 
+//test
+
 typedef struct
 {
     Uint32          model_max;      /**<maximum concurrent sprites supported*/

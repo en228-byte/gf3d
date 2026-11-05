@@ -171,6 +171,12 @@
     <ClCompile Include="..\src\gf3d_mesh.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\entity.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\player.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\Makefile">
@@ -350,6 +356,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\gf3d_model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -17,6 +17,8 @@
 #include "gf2d_mouse.h"
 #include "gf3d_model.h"
 #include "gf3d_mesh.h"
+#include "entity.h"
+#include "player.h"
 
 #include "gf3d_vgraphics.h"
 #include "gf3d_pipeline.h"
@@ -41,7 +43,7 @@ int main(int argc,char *argv[])
 {
     //local variables
     //Sprite *bg;
-    Model  *agumon;
+    Entity  *agumon;
     GFC_Matrix4 mat;
     GFC_Matrix4* view;
     GFC_Vector3D offset = { 0,-15,0 };
@@ -58,6 +60,7 @@ int main(int argc,char *argv[])
     gf3d_vgraphics_init("config/setup.cfg");
     gf2d_font_init("config/font.cfg");
     gf2d_actor_init(1000);
+    entity_init(10000);
     
     //game init
     srand(SDL_GetTicks());
@@ -65,14 +68,15 @@ int main(int argc,char *argv[])
     //bg = gf2d_sprite_load_image("images/bg_flat.png");
     gfc_matrix4_identity(mat);
     
-    agumon = gf3d_model_load("models/dino/dino.model");
     slog("test1");
+    agumon = player_spawn(gfc_vector3d(0,-15,0));
     view = gf3d_vgraphics_get_view_matrix();
     gf2d_mouse_load("actors/mouse.actor");
     slog_sync();
     // main game loop    
     while(!_done)
     {
+        entity_system_update();
         gfc_vector3d_rotate_about_z(&offset, 0.05);
         gfc_input_update();
         gf2d_mouse_update();
@@ -80,14 +84,15 @@ int main(int argc,char *argv[])
         //camera updaes
         gfc_matrix4_view(*view, offset, gfc_vector3d(0, 0, 0), gfc_vector3d(0, 0, 1));
         gf3d_vgraphics_render_start();
-        gf3d_model_queue_render(agumon, mat, GFC_COLOR_WHITE);
+        //gf3d_model_queue_render(agumon, mat, GFC_COLOR_WHITE);
 
         
         slog_sync();
                 //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
-                gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
-                gf2d_mouse_draw();
+        entity_system_draw();
+        gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
+        gf2d_mouse_draw();
         gf3d_vgraphics_render_end();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
         game_frame_delay();
