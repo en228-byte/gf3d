@@ -1,0 +1,9 @@
+{
+    "level":{
+        "music":"sounds/music/piano.mp3",
+        "bounds":{
+            "m":[-50,-50,-50],
+            "s":[100,100,100]
+        }
+    }
+}

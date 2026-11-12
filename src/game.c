@@ -19,6 +19,7 @@
 #include "gf3d_mesh.h"
 #include "entity.h"
 #include "player.h"
+#include "level.h"
 
 #include "gf3d_vgraphics.h"
 #include "gf3d_pipeline.h"
@@ -43,10 +44,11 @@ int main(int argc,char *argv[])
 {
     //local variables
     //Sprite *bg;
+    Level* level;
     Entity  *agumon;
     GFC_Matrix4 mat;
     GFC_Matrix4* view;
-    GFC_Vector3D offset = { 0,-15,0 };
+    GFC_Vector3D offset = { 0,-50,0 };
     slog_sync();
     //initializtion    
     parse_arguments(argc,argv);
@@ -69,6 +71,7 @@ int main(int argc,char *argv[])
     gfc_matrix4_identity(mat);
     
     slog("test1");
+    level = level_load("levels/testLevel.level");
     agumon = player_spawn(gfc_vector3d(0,-15,0));
     view = gf3d_vgraphics_get_view_matrix();
     gf2d_mouse_load("actors/mouse.actor");
@@ -76,8 +79,9 @@ int main(int argc,char *argv[])
     // main game loop    
     while(!_done)
     {
+        entity_system_think();
         entity_system_update();
-        gfc_vector3d_rotate_about_z(&offset, 0.05);
+       // gfc_vector3d_rotate_about_z(&offset, 0.05);
         gfc_input_update();
         gf2d_mouse_update();
         gf2d_font_update();

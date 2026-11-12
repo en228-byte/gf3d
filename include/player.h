@@ -6,6 +6,7 @@
 #include "gfc_text.h"
 #include "gfc_matrix.h"
 #include "gfc_primitives.h"
+#include "gfc_input.h"
 
 #include "gf3d_pipeline.h"
 
@@ -18,6 +19,8 @@ typedef struct {
 	GFC_Vector2D	cameraRotation;
 } PlayerEntityData;
 
+Entity* player_get_the();
+
 Entity *player_spawn(GFC_Vector3D position);
 
 //player think
@@ -28,5 +31,7 @@ int player_draw(Entity *ent);
 
 //player update
 int player_update(Entity *ent);
+
+int player_free(Entity *ent);
 
 #endif

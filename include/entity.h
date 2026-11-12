@@ -17,15 +17,18 @@ typedef struct Entity_S
 	Uint8			_inuse;
 	Model			*model;
 	GFC_Matrix4		mat;
+	GFC_Box         bounds; //dont let anything leave
 	GFC_Color		colorMod;
 	GFC_Vector3D	position;
 	GFC_Vector3D	rotation;
 	GFC_Vector3D	scaltion; //scale, but i think its funny that kehoe wanted them all to match
 	GFC_Vector3D	velocity;
+	Bool			collider;
 
 	int (*think)(struct Entity_S* self);
 	int (*update)(struct Entity_S* self);
-	int (*draw)(struct Entity_S* self);
+	int (*draw)(struct Entity_S* self); 
+	int (*free)(struct Entity_S* self);
 	void(*data);
 } Entity;
 
@@ -50,5 +53,9 @@ void this_entity_update(Entity* self);
 void this_entity_think(Entity* self);
 
 void this_entity_draw(Entity* self);
+
+Uint8 entity_collision(Entity* self);
+
+int entity_move_check(Entity* self, GFC_Vector3D offset);
 
 #endif // !__ENTITY_H__

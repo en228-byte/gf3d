@@ -1,5 +1,7 @@
 #include "simple_logger.h"
 #include "entity.h"
+#include "player.h"
+#include "level.h"
 
 typedef struct
 {
@@ -65,6 +67,12 @@ Entity* entity_new()
 void entity_free(Entity *ent)
 {
 	if (!ent || !ent->_inuse) return;
+	if (ent->free) {
+		if (ent->free(ent) == 1) {
+			slog("clean up custom data if its there");
+			return;
+		}
+	}
 	gf3d_model_free(ent->model);
 	memset(ent, 0, sizeof(Entity));
 }
@@ -116,7 +124,6 @@ void this_entity_update(Entity* self)
 
 	if (self->update) {
 		if (self->update(self) == 1) {
-			slog("we're trying to update personally");
 			return;
 		}
 	}
@@ -130,11 +137,13 @@ void this_entity_think(Entity* self)
 
 	if (self->think) {
 		if (self->think(self) == 1) {
-			slog("we're trying to think personally");
 			return;
 		}
 	}
-	//slog("we made it to the end of drawing");
+	if (self->collider) {
+		if (entity_collision > 0) slog("reaching out...touching me...touching you");
+	}
+	slog_sync();
 }
 
 void this_entity_draw(Entity* self)
@@ -144,10 +153,55 @@ void this_entity_draw(Entity* self)
 
 	if (self->draw) {
 		if (self->draw(self) == 1) {
-			slog("we're trying to draw personally");
 			return;
 		}
 	}
+	else {
+		if (!self->model) {
+			slog("model issue entity");
+			return;
+		}
+		if (!self->mat) {
+			slog("matrix issue entity");
+			return;
+		}
+		gfc_matrix4_from_vectors(self->mat, self->position, self->rotation, self->scaltion);
+		gf3d_model_queue_render(self->model, self->mat, self->colorMod);
+	}
 	//slog("we made it to the end of drawing");
 }
+
+Uint8 entity_collision(Entity* self) {
+	if (!self || !player_get_the()) return;
+
+	GFC_Box a, b;
+	a = self->bounds;
+	b = player_get_the()->bounds;
+	
+
+	gfc_vector3d_add(a, a, self->position);
+	gfc_vector3d_add(b, b, player_get_the()->position);
+	return gfc_box_overlap(a, b);
+}
+
+int entity_move_check(Entity* self, GFC_Vector3D offset) {
+	GFC_Box aabb;
+
+	if (!self) return 0;
+
+	aabb = self->bounds;
+
+	gfc_vector3d_add(aabb, self->bounds, self->position);
+	gfc_vector3d_add(aabb, aabb, offset);
+	if (!level_bounds_check(level_get_the(), aabb)) {
+		slog("made it");
+		slog_sync();
+		return 1;
+	}
+	else {
+		slog("we aint make jack skippy");
+	}
+	return 0;
+}
+
 /*eol@eof*/
