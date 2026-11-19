@@ -16,9 +16,10 @@ Entity* player_spawn(GFC_Vector3D position)
     if (!self) return NULL;
 
     self->model = gf3d_model_load("models/dino/dino.model");
-    self->draw = player_draw;
     self->update = player_update;
     self->think = player_think;
+    self->scaltion = gfc_vector3d(2.3, 2.3, 2.3);
+    self->colorMod = GFC_COLOR_BLACK;
     self->free = player_free;
     self->position = position;
     self->bounds = gfc_box(self->position.x, self->position.y, self->position.z, 10, 10, 10);
@@ -32,15 +33,22 @@ int player_think(Entity *self)
 {
     if (!self || !self->_inuse) return 0;
 
+    //cheats
+    if (gfc_input_command_released("nextelement")) {
+        Entity* testNPC;
+        testNPC = visitor_spawn(gfc_vector3d(self->position.x + 10, self->position.y + 10, -1));
+
+        slog("we doin this");
+    }
     //movement side to side
     if (gfc_input_command_down("item_left")) {
         if (self->velocity.x > -0.5) {
-            self->velocity.x -= 0.01;
+            self->velocity.x -= 0.001;
         }
     }
     else if (gfc_input_command_down("item_right")) {
         if (self->velocity.x < 0.5) {
-            self->velocity.x += 0.01;
+            self->velocity.x += 0.001;
         }
     }
     else {
@@ -49,12 +57,12 @@ int player_think(Entity *self)
     //movement forward and back
     if (gfc_input_command_down("item_down")) {
         if (self->velocity.y > -0.5) {
-            self->velocity.y -= 0.01;
+            self->velocity.y -= 0.0025;
         }
     }
     else if (gfc_input_command_down("item_up")) {
         if (self->velocity.y < 0.5) {
-            self->velocity.y += 0.01;
+            self->velocity.y += 0.0025;
         }
     }
     else {
@@ -62,22 +70,6 @@ int player_think(Entity *self)
     }
 
     slog_sync();
-    return 1;
-}
-
-int player_draw(Entity *self)
-{
-    if (!self || !self->_inuse) return 0;
-    if (!self->model) {
-        slog("model issue player");
-        return 0;
-    }
-    if (!self->mat) {
-        slog("matrix issue player");
-        return 0;
-    }
-    gfc_matrix4_from_vectors(self->mat, self->position, self->rotation, self->scaltion);
-    gf3d_model_queue_render(self->model, self->mat, self->colorMod);
     return 1;
 }
 

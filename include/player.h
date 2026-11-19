@@ -13,10 +13,13 @@
 #include "gf3d_model.h"
 #include "gf3d_mesh.h"
 #include "entity.h"
+#include "visitors.h"
 
 typedef struct {
 	float			cameraDistance;
 	GFC_Vector2D	cameraRotation;
+	char			task;
+	int				curTaskNum;
 } PlayerEntityData;
 
 Entity* player_get_the();
@@ -25,9 +28,6 @@ Entity *player_spawn(GFC_Vector3D position);
 
 //player think
 int player_think(Entity *ent);
-
-//player draw
-int player_draw(Entity *ent);
 
 //player update
 int player_update(Entity *ent);

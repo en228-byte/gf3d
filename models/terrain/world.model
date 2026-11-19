@@ -2,6 +2,6 @@
     "model":
     {
         "obj":"models/terrain/icube.obj",
-        "texture":"models/sky/sky.png"
+        "texture":"levels/ceiling.jpg"
     }
 }

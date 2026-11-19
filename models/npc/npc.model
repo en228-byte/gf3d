@@ -1,0 +1,7 @@
+{
+    "model":
+    {
+        "obj":"models/npc/testNPC.obj",
+        "texture":"models/npc/grey.png"
+    }
+}

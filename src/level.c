@@ -60,7 +60,7 @@ Level* level_load(const char* filename) {
     }
     level->world->collider = true;
     level->world->colorMod = GFC_COLOR_WHITE;
-    level->world->position = gfc_vector3d(-50,-40,-50);
+    level->world->position = gfc_vector3d(0,0,0);
     level->world->scaltion = gfc_vector3d(100, 100, 100);
 
    

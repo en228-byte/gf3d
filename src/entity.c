@@ -55,8 +55,6 @@ Entity* entity_new()
 		if (entity_manager.entityList[i]._inuse)continue;
 		entity_manager.entityList[i]._inuse = 1;
 
-		entity_manager.entityList[i].colorMod = GFC_COLOR_WHITE;
-		entity_manager.entityList[i].scaltion = gfc_vector3d(1, 1, 1);
 
 		return &entity_manager.entityList[i];
 	}
@@ -140,9 +138,6 @@ void this_entity_think(Entity* self)
 			return;
 		}
 	}
-	if (self->collider) {
-		if (entity_collision > 0) slog("reaching out...touching me...touching you");
-	}
 	slog_sync();
 }
 
@@ -177,11 +172,13 @@ Uint8 entity_collision(Entity* self) {
 	GFC_Box a, b;
 	a = self->bounds;
 	b = player_get_the()->bounds;
-	
 
 	gfc_vector3d_add(a, a, self->position);
 	gfc_vector3d_add(b, b, player_get_the()->position);
-	return gfc_box_overlap(a, b);
+	if (gfc_box_overlap(a, b)) {
+		return 1;
+	}
+	return 0;
 }
 
 int entity_move_check(Entity* self, GFC_Vector3D offset) {
@@ -194,12 +191,7 @@ int entity_move_check(Entity* self, GFC_Vector3D offset) {
 	gfc_vector3d_add(aabb, self->bounds, self->position);
 	gfc_vector3d_add(aabb, aabb, offset);
 	if (!level_bounds_check(level_get_the(), aabb)) {
-		slog("made it");
-		slog_sync();
 		return 1;
-	}
-	else {
-		slog("we aint make jack skippy");
 	}
 	return 0;
 }

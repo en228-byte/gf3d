@@ -266,7 +266,6 @@ Model * gf3d_model_load(const char * filename){
     str2 = sj_object_get_string( data, "texture");
     if (str2){
         texture = gf3d_texture_load(str2);
-        slog("TEXTURE IS HERE");
     } else {
         texture = gf3d_model.defaultTexture;
         slog("failed to find model texture. default texture enabled");
