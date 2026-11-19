@@ -30,6 +30,7 @@ typedef struct {
 	int				updradeLevel;
 	Task			tasks[100];
 	Bool			rev;
+	Bool			speed;
 } PlayerEntityData;
 
 Entity* player_get_the();

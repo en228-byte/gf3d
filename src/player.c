@@ -34,6 +34,7 @@ int player_think(Entity *self)
 {
     Entity* player = player_get_the();
     PlayerEntityData* data = (PlayerEntityData*)player->data;
+    float max;
 
     if (!player || !data) return 0;
     if (!self || !self->_inuse) return 0;
@@ -56,22 +57,31 @@ int player_think(Entity *self)
     if (gfc_input_command_released("yes")) {
         data->rev = !data->rev;
     }
+    if (gfc_input_command_released("yes")) {
+        data->speed = !data->speed;
+    }
 
     //
     // 
     // 
     //movement
+    if (data->speed) {
+        max = 0.01;
+    }
+    else {
+        max = 0.001;
+    }
     if (!data->rev) {
 
     //movement side to side
     if (gfc_input_command_down("item_left")) {
         if (self->velocity.x > -0.5) {
-            self->velocity.x -= 0.001;
+            self->velocity.x -= max;
         }
     }
     else if (gfc_input_command_down("item_right")) {
         if (self->velocity.x < 0.5) {
-            self->velocity.x += 0.001;
+            self->velocity.x += max;
         }
     }
     else {
@@ -80,12 +90,12 @@ int player_think(Entity *self)
     //movement forward and back
     if (gfc_input_command_down("item_down")) {
         if (self->velocity.y > -0.5) {
-            self->velocity.y -= 0.0025;
+            self->velocity.y -= max;
         }
     }
     else if (gfc_input_command_down("item_up")) {
         if (self->velocity.y < 0.5) {
-            self->velocity.y += 0.0025;
+            self->velocity.y += max;
         }
     }
     else {
@@ -95,12 +105,12 @@ int player_think(Entity *self)
     else {
         if (gfc_input_command_down("item_right")) {
             if (self->velocity.x > -0.5) {
-                self->velocity.x -= 0.001;
+                self->velocity.x -= max;
             }
         }
         else if (gfc_input_command_down("item_left")) {
             if (self->velocity.x < 0.5) {
-                self->velocity.x += 0.001;
+                self->velocity.x += max;
             }
         }
         else {
@@ -109,12 +119,12 @@ int player_think(Entity *self)
         //movement forward and back
         if (gfc_input_command_down("item_up")) {
             if (self->velocity.y > -0.5) {
-                self->velocity.y -= 0.0025;
+                self->velocity.y -= max;
             }
         }
         else if (gfc_input_command_down("item_down")) {
             if (self->velocity.y < 0.5) {
-                self->velocity.y += 0.0025;
+                self->velocity.y += max;
             }
         }
         else {
