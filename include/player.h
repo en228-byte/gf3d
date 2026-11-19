@@ -29,6 +29,7 @@ typedef struct {
 	int				satisfaction;
 	int				updradeLevel;
 	Task			tasks[100];
+	Bool			rev;
 } PlayerEntityData;
 
 Entity* player_get_the();

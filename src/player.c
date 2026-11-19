@@ -32,8 +32,15 @@ Entity* player_spawn(GFC_Vector3D position)
 
 int player_think(Entity *self)
 {
+    Entity* player = player_get_the();
+    PlayerEntityData* data = (PlayerEntityData*)player->data;
+
+    if (!player || !data) return 0;
     if (!self || !self->_inuse) return 0;
 
+    //
+    //
+    // 
     //cheats
     if (gfc_input_command_released("nextelement")) {
         Entity* testNPC;
@@ -45,6 +52,16 @@ int player_think(Entity *self)
         completeTask(self);
     }
     if (gfc_input_command_released("build")) upgradeLibrary(self);
+
+    if (gfc_input_command_released("yes")) {
+        data->rev = !data->rev;
+    }
+
+    //
+    // 
+    // 
+    //movement
+    if (!data->rev) {
 
     //movement side to side
     if (gfc_input_command_down("item_left")) {
@@ -73,6 +90,36 @@ int player_think(Entity *self)
     }
     else {
         self->velocity.y = 0;
+    }
+    }
+    else {
+        if (gfc_input_command_down("item_right")) {
+            if (self->velocity.x > -0.5) {
+                self->velocity.x -= 0.001;
+            }
+        }
+        else if (gfc_input_command_down("item_left")) {
+            if (self->velocity.x < 0.5) {
+                self->velocity.x += 0.001;
+            }
+        }
+        else {
+            self->velocity.x = 0;
+        }
+        //movement forward and back
+        if (gfc_input_command_down("item_up")) {
+            if (self->velocity.y > -0.5) {
+                self->velocity.y -= 0.0025;
+            }
+        }
+        else if (gfc_input_command_down("item_down")) {
+            if (self->velocity.y < 0.5) {
+                self->velocity.y += 0.0025;
+            }
+        }
+        else {
+            self->velocity.y = 0;
+        }
     }
 
     slog_sync();
