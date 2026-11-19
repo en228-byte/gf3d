@@ -34,12 +34,14 @@ int visitor_free(Entity* ent);
 
 //visitor specific actions
 
-void visitor_request();
+void visitor_request(Entity* self);
 
-char* visitor_rate();
+char* visitor_rate(Entity* self);
 
 const char setState(const char state);
 
-int checkTask(Entity* ent);
+int isTask(Entity* ent);
+
+int finishedTask(Entity* self);
 
 #endif

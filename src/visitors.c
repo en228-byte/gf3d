@@ -33,7 +33,6 @@ Entity* visitor_spawn(GFC_Vector3D position)
 //visitor think
 int visitor_think(Entity* ent)
 {
-    char* res;
     Visitor* data;
 
     if (!ent) {
@@ -50,21 +49,20 @@ int visitor_think(Entity* ent)
         ent->data = data;
     }
     if (strcmp(data->state, "ASKING") == 0) {
-        if (!checkTask(ent)) {
-            res = visitor_rate(ent);
-            data->state = res;
-            return 1;
-        }
-        else {
-            return 1;
+        finishedTask(ent);
+        if (gfc_input_command_down("pandown")) {
+            slog("DID IT");
+            completeTask(data->reqNum);
         }
     }
     if (strcmp(data->state, "IDLE") == 0 || strcmp(data->state, "ANGRY") == 0) {
 
     if (entity_collision(ent)) {
         data->state = "ANGRY";
+        slog("im not touching you");
         if (gfc_input_command_down("panright")) {
             slog("need some help");
+            slog_sync();
             data->state = "ASKING";
             visitor_request(ent);
         }
@@ -72,8 +70,8 @@ int visitor_think(Entity* ent)
     else {
         data->state = "IDLE";
     }
+    slog_sync();
     }
-
     return 0;
 }
 
@@ -140,6 +138,9 @@ void visitor_request(Entity* self)
     Visitor* data;
     PlayerEntityData* pd;
     Entity* player;
+    Task* thisTask;
+
+    thisTask = gfc_allocate_array(sizeof(Task), 1);
 
     if (!self || !self->data) return;
 
@@ -151,7 +152,11 @@ void visitor_request(Entity* self)
 
     data->reqNum = pd->curTaskNum;
 
-    pd->task = "Get me a book by pressing SPACE FIVE TIMES";
+    thisTask->completed = false;
+    thisTask->taskID = data->reqNum;
+
+    addTask(thisTask);
+    slog_sync();
 }
 
 //visitor rate librarian
@@ -188,6 +193,12 @@ char* visitor_rate(Entity* self)
         return "ANGRY";
     }
     data->reqNum = -1;
+    if (pd->satisfaction) {
+        pd->satisfaction += grade;
+    }
+    else {
+        pd->satisfaction = grade;
+    }
 }
 
 const char setState(const char state)
@@ -195,7 +206,7 @@ const char setState(const char state)
     return state;
 }
 
-int checkTask(Entity* ent) {
+int isTask(Entity* ent) {
     Visitor* data;
 
     data = (Visitor*)ent->data;
@@ -207,4 +218,26 @@ int checkTask(Entity* ent) {
     }
 
     return 0;
+}
+
+int finishedTask(Entity* self) {
+    Visitor* data;
+    PlayerEntityData* pd;
+    Entity* player;
+
+    if (!self || !self->data) return;
+
+    data = (Visitor*)self->data;
+    player = player_get_the();
+    if (!data || !player || !player->data) return 0;
+
+    pd = (PlayerEntityData*)player->data;
+
+    if (!pd->tasks[data->reqNum].completed) return 0;
+
+    data->reqNum = -1;
+    data->state = "IDLE";
+
+    data->state = visitor_rate(self);
+    slog("%s", data->state);
 }

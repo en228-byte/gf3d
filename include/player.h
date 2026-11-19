@@ -15,11 +15,20 @@
 #include "entity.h"
 #include "visitors.h"
 
+typedef struct
+{
+	int     taskID;
+	Bool    completed;
+} Task;
+
 typedef struct {
 	float			cameraDistance;
 	GFC_Vector2D	cameraRotation;
-	char			task;
+	int				taskCount;
 	int				curTaskNum;
+	int				satisfaction;
+	int				updradeLevel;
+	Task			tasks[100];
 } PlayerEntityData;
 
 Entity* player_get_the();
@@ -33,5 +42,11 @@ int player_think(Entity *ent);
 int player_update(Entity *ent);
 
 int player_free(Entity *ent);
+
+void upgradeLibrary(Entity* self);
+
+void addTask(Task* task);
+
+void completeTask(Entity* self);
 
 #endif
